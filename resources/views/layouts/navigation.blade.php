@@ -15,6 +15,12 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('configurations.categories')" :active="request()->routeIs('configurations.categories')">
+                        {{ __('Transaction Category') }}
+                    </x-nav-link>
+                    <x-nav-link :href="'#'">
+                        {{ __('API Documentation') }}
+                    </x-nav-link>
                 </div>
             </div>
 
@@ -43,7 +49,7 @@
                             @csrf
 
                             <x-dropdown-link :href="route('logout')"
-                                    onclick="event.preventDefault();
+                                onclick="event.preventDefault();
                                                 this.closest('form').submit();">
                                 {{ __('Log Out') }}
                             </x-dropdown-link>
@@ -70,6 +76,12 @@
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('configurations.categories')" :active="request()->routeIs('configurations.categories')">
+                {{ __('Transaction Category') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="'#'">
+                {{ __('API Documentation') }}
+            </x-responsive-nav-link>
         </div>
 
         <!-- Responsive Settings Options -->
@@ -89,7 +101,7 @@
                     @csrf
 
                     <x-responsive-nav-link :href="route('logout')"
-                            onclick="event.preventDefault();
+                        onclick="event.preventDefault();
                                         this.closest('form').submit();">
                         {{ __('Log Out') }}
                     </x-responsive-nav-link>
