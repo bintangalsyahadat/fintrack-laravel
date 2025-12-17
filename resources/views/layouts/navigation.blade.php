@@ -15,10 +15,10 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('transactions')" :active="request()->routeIs('transactions')">
+                    <x-nav-link :href="route('web.transactions.index')" :active="request()->routeIs('web.transactions.index')">
                         {{ __('Transaction') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('categories')" :active="request()->routeIs('categories')">
+                    <x-nav-link :href="route('web.categories.index')" :active="request()->routeIs('web.categories.index')">
                         {{ __('Category') }}
                     </x-nav-link>
                     <x-nav-link :href="'#'">
@@ -79,10 +79,10 @@
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('transactions')" :active="request()->routeIs('transactions')">
+            <x-responsive-nav-link :href="route('web.transactions.index')" :active="request()->routeIs('web.transactions.index')">
                 {{ __('Transaction') }}
             </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('categories')" :active="request()->routeIs('categories')">
+            <x-responsive-nav-link :href="route('web.categories.index')" :active="request()->routeIs('web.categories.index')">
                 {{ __('Category') }}
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="'#'">

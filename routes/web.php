@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\TransactionController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -11,21 +13,13 @@ Route::get('/dashboard', function () {
     return view('pages.dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('/categories', function () {
-    $categories = [
-        ['id'=>1, 'name'=>'Gaji', 'type'=>'income', 'icon'=>'💰'],
-        ['id'=>2, 'name'=>'Investasi', 'type'=>'income', 'icon'=>'📈'],
-        ['id'=>3, 'name'=>'Makanan', 'type'=>'expense', 'icon'=>'🍔'],
-        ['id'=>4, 'name'=>'Transport', 'type'=>'expense', 'icon'=>'🚌'],
-    ];
+Route::resource('categories', CategoryController::class)
+    ->middleware(['auth', 'verified'])
+    ->names('web.categories');
 
-    return view('pages.categories')->with('categories', $categories);
-})->middleware(['auth', 'verified'])->name('categories');
-
-
-Route::get('/transactions', function () {
-    return view('pages.transactions');
-})->middleware(['auth', 'verified'])->name('transactions');
+Route::resource('transactions', TransactionController::class)
+    ->middleware(['auth', 'verified'])
+    ->names('web.transactions');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

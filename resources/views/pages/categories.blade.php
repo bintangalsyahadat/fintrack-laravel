@@ -72,7 +72,7 @@
                                     class="inline-block rounded-full bg-green-100 px-3 py-0.5 text-xs font-medium text-green-700">
                                     Pemasukan
                                 </span>
-                            </div>
+                             </div>
                         </div>
 
                         <div class="flex items-center gap-3">
