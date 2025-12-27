@@ -17,13 +17,20 @@ class CategoryController extends Controller
     {
         $categories = Categories::where('user_id', Auth::id())->get();
 
+        $incomeCategories = $categories->where('type', 'income');
+        $expenseCategories = $categories->where('type', 'expense');
+
         // API
         if ($request->wantsJson()) {
             return CategoryResource::collection($categories);
         }
 
+
         // Web
-        return view('pages.categories', compact('categories'));
+        return view('pages.categories', compact(
+            'incomeCategories',
+            'expenseCategories'
+        ));
     }
 
     /**
@@ -79,7 +86,7 @@ class CategoryController extends Controller
             return new CategoryResource($category);
         }
 
-        return view('categories.show', compact('category'));
+        return view('pages.categories_detail', compact('category'));
     }
 
     /**

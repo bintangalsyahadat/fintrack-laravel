@@ -151,7 +151,7 @@ class TransactionController extends Controller
             ->where('user_id', Auth::id())
             ->first();
     }
-
+    
     private function notFoundResponse(Request $request)
     {
         if ($request->wantsJson()) {
