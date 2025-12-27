@@ -13,13 +13,13 @@
     </x-slot>
 
     <div class="py-6">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
             {{-- TABLE --}}
             <div class="overflow-hidden rounded-xl border bg-white">
                 <div class="overflow-x-auto">
                     <table class="w-full text-sm">
-                        <thead class="bg-gray-50 text-left text-gray-600">
+                        <thead class="bg-gray-50 text-gray-600">
                             <tr>
                                 <th class="px-4 py-3">Tanggal</th>
                                 <th class="px-4 py-3">Deskripsi</th>
@@ -31,13 +31,13 @@
                         </thead>
                         <tbody class="divide-y">
                             @forelse ($transactions as $trx)
-                                <tr class="hover:bg-gray-50">
-                                    <td class="px-4 py-3 text-gray-600">
+                                <tr>
+                                    <td class="px-4 py-3">
                                         {{ \Carbon\Carbon::parse($trx->date)->format('d M Y') }}
                                     </td>
 
                                     <td class="px-4 py-3">
-                                        <div class="font-medium">{{ $trx->description ?? '-' }}</div>
+                                        {{ $trx->description ?? '-' }}
                                     </td>
 
                                     <td class="px-4 py-3">
@@ -46,11 +46,11 @@
 
                                     <td class="px-4 py-3">
                                         @if ($trx->type === 'income')
-                                            <span class="rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-700">
+                                            <span class="rounded-full bg-green-100 px-3 py-1 text-xs text-green-700">
                                                 Pemasukan
                                             </span>
                                         @else
-                                            <span class="rounded-full bg-red-100 px-3 py-1 text-xs font-medium text-red-700">
+                                            <span class="rounded-full bg-red-100 px-3 py-1 text-xs text-red-700">
                                                 Pengeluaran
                                             </span>
                                         @endif
@@ -64,16 +64,18 @@
 
                                     <td class="px-4 py-3 text-center">
                                         <div class="flex justify-center gap-3">
+
                                             {{-- EDIT --}}
                                             <button
                                                 onclick="openEditModal(
-                                                    '{{ $trx->id }}',
+                                                    '{{ route('web.transactions.update', $trx->id) }}',
                                                     '{{ $trx->description }}',
                                                     '{{ $trx->type }}',
                                                     '{{ $trx->amount }}',
-                                                    '{{ $trx->date }}'
+                                                    '{{ $trx->date }}',
+                                                    '{{ $trx->category_id }}'
                                                 )"
-                                                class="text-blue-600 hover:text-blue-800">
+                                                class="text-blue-600">
                                                 <i class="fa-solid fa-pen"></i>
                                             </button>
 
@@ -83,10 +85,11 @@
                                                 onsubmit="return confirm('Hapus transaksi ini?')">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button class="text-red-600 hover:text-red-800">
+                                                <button class="text-red-600">
                                                     <i class="fa-solid fa-trash"></i>
                                                 </button>
                                             </form>
+
                                         </div>
                                     </td>
                                 </tr>
@@ -106,18 +109,26 @@
     </div>
 
     {{-- ================= MODAL TAMBAH ================= --}}
-    <div id="addModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black bg-opacity-50">
+    <div id="addModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50">
         <div class="w-full max-w-md rounded-xl bg-white p-6">
             <h3 class="mb-4 text-lg font-semibold">Tambah Transaksi</h3>
 
             <form method="POST" action="{{ route('web.transactions.store') }}">
                 @csrf
+
                 <div class="space-y-3">
                     <input type="text" name="description" placeholder="Deskripsi"
-                        class="w-full rounded-lg border-gray-300 text-sm" required>
+                        class="w-full rounded-lg border-gray-300 text-sm">
 
-                    <select name="type" class="w-full rounded-lg border-gray-300 text-sm">
-                        <option value="income">income</option>
+                    <select name="category_id" class="w-full rounded-lg border-gray-300 text-sm" required>
+                        <option value="">-- Pilih Kategori --</option>
+                        @foreach ($categories as $cat)
+                            <option value="{{ $cat->id }}">{{ $cat->name }}</option>
+                        @endforeach
+                    </select>
+
+                    <select name="type" class="w-full rounded-lg border-gray-300 text-sm" required>
+                        <option value="income">Pemasukan</option>
                         <option value="expense">Pengeluaran</option>
                     </select>
 
@@ -143,7 +154,7 @@
     </div>
 
     {{-- ================= MODAL EDIT ================= --}}
-    <div id="editModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black bg-opacity-50">
+    <div id="editModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50">
         <div class="w-full max-w-md rounded-xl bg-white p-6">
             <h3 class="mb-4 text-lg font-semibold">Edit Transaksi</h3>
 
@@ -155,9 +166,16 @@
                     <input id="editDescription" name="description"
                         class="w-full rounded-lg border-gray-300 text-sm">
 
+                    <select id="editCategory" name="category_id"
+                        class="w-full rounded-lg border-gray-300 text-sm" required>
+                        @foreach ($categories as $cat)
+                            <option value="{{ $cat->id }}">{{ $cat->name }}</option>
+                        @endforeach
+                    </select>
+
                     <select id="editType" name="type"
-                        class="w-full rounded-lg border-gray-300 text-sm">
-                        <option value="income">income</option>
+                        class="w-full rounded-lg border-gray-300 text-sm" required>
+                        <option value="income">Pemasukan</option>
                         <option value="expense">Pengeluaran</option>
                     </select>
 
@@ -183,33 +201,32 @@
     </div>
 
     {{-- ================= JAVASCRIPT ================= --}}
-    @push('scripts')
     <script>
         function openAddModal() {
-            document.getElementById('addModal').classList.remove('hidden');
-            document.getElementById('addModal').classList.add('flex');
+            addModal.classList.remove('hidden');
+            addModal.classList.add('flex');
         }
 
         function closeAddModal() {
-            document.getElementById('addModal').classList.add('hidden');
+            addModal.classList.add('hidden');
         }
 
-        function openEditModal(id, description, type, amount, date) {
-            document.getElementById('editDescription').value = description;
-            document.getElementById('editType').value = type;
-            document.getElementById('editAmount').value = amount;
-            document.getElementById('editDate').value = date;
+        function openEditModal(action, desc, type, amount, date, category) {
+            editDescription.value = desc;
+            editType.value = type;
+            editAmount.value = amount;
+            editDate.value = date;
+            editCategory.value = category;
 
-            document.getElementById('editForm').action = `/transactions/${id}`;
+            editForm.action = action;
 
-            document.getElementById('editModal').classList.remove('hidden');
-            document.getElementById('editModal').classList.add('flex');
+            editModal.classList.remove('hidden');
+            editModal.classList.add('flex');
         }
 
         function closeEditModal() {
-            document.getElementById('editModal').classList.add('hidden');
+            editModal.classList.add('hidden');
         }
     </script>
-    @endpush
 
 </x-app-layout>

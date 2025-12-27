@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Transactions;
 use App\Http\Resources\TransactionResource;
+use App\Models\Categories;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -20,13 +21,22 @@ class TransactionController extends Controller
             ->latest('date')
             ->get();
 
+        // WAJIB: ambil kategori user
+        $categories = Categories::where('user_id', Auth::id())
+            ->orderBy('name')
+            ->get();
+
+        // API response
         if ($request->wantsJson()) {
             return TransactionResource::collection($transactions);
         }
 
-        return view('pages.transactions', compact('transactions'));
+        // VIEW response
+        return view('pages.transactions', compact(
+            'transactions',
+            'categories'
+        ));
     }
-
     /**
      * Store a newly created resource in storage.
      */
@@ -151,7 +161,7 @@ class TransactionController extends Controller
             ->where('user_id', Auth::id())
             ->first();
     }
-    
+
     private function notFoundResponse(Request $request)
     {
         if ($request->wantsJson()) {
