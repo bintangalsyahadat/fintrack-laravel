@@ -57,7 +57,7 @@
                                     </td>
 
                                     <td class="px-4 py-3 text-right font-medium
-                                        {{ $trx->type === 'income' ? 'text-green-600' : 'text-red-600' }}">
+                                                        {{ $trx->type === 'income' ? 'text-green-600' : 'text-red-600' }}">
                                         {{ $trx->type === 'income' ? '+' : '-' }}
                                         Rp {{ number_format($trx->amount, 0, ',', '.') }}
                                     </td>
@@ -66,22 +66,19 @@
                                         <div class="flex justify-center gap-3">
 
                                             {{-- EDIT --}}
-                                            <button
-                                                onclick="openEditModal(
-                                                    '{{ route('web.transactions.update', $trx->id) }}',
-                                                    '{{ $trx->description }}',
-                                                    '{{ $trx->type }}',
-                                                    '{{ $trx->amount }}',
-                                                    '{{ $trx->date }}',
-                                                    '{{ $trx->category_id }}'
-                                                )"
-                                                class="text-blue-600">
+                                            <button onclick="openEditModal(
+                                                                    '{{ route('web.transactions.update', $trx->id) }}',
+                                                                    '{{ $trx->description }}',
+                                                                    '{{ $trx->type }}',
+                                                                    '{{ $trx->amount }}',
+                                                                    '{{ $trx->date }}',
+                                                                    '{{ $trx->category_id }}'
+                                                                )" class="text-blue-600">
                                                 <i class="fa-solid fa-pen"></i>
                                             </button>
 
                                             {{-- DELETE --}}
-                                            <form method="POST"
-                                                action="{{ route('web.transactions.destroy', $trx->id) }}"
+                                            <form method="POST" action="{{ route('web.transactions.destroy', $trx->id) }}"
                                                 onsubmit="return confirm('Hapus transaksi ini?')">
                                                 @csrf
                                                 @method('DELETE')
@@ -109,91 +106,86 @@
     </div>
 
     {{-- ================= MODAL TAMBAH ================= --}}
-    <div id="addModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50">
-        <div class="w-full max-w-md rounded-xl bg-white p-6">
-            <h3 class="mb-4 text-lg font-semibold">Tambah Transaksi</h3>
+    <div id="addModal" class="fixed inset-0 z-50 hidden items-end sm:items-center justify-center bg-black/50">
 
-            <form method="POST" action="{{ route('web.transactions.store') }}">
+        <div id="addModalContent" class="w-full sm:max-w-md rounded-t-2xl sm:rounded-2xl bg-white shadow-xl
+               transform transition-all duration-300 translate-y-full sm:translate-y-0 sm:scale-95">
+
+            {{-- HEADER --}}
+            <div
+                class="flex items-center justify-between rounded-t-2xl bg-gradient-to-r from-blue-600 to-indigo-600 px-5 py-4 text-white">
+                <div>
+                    <h3 class="text-base font-semibold">Tambah Transaksi</h3>
+                    <p class="text-xs opacity-90">Catat pemasukan / pengeluaran</p>
+                </div>
+                <button onclick="closeAddModal()" class="text-white/80 hover:text-white">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            {{-- FORM --}}
+            <form method="POST" action="{{ route('web.transactions.store') }}" class="px-5 py-4">
                 @csrf
 
-                <div class="space-y-3">
-                    <input type="text" name="description" placeholder="Deskripsi"
-                        class="w-full rounded-lg border-gray-300 text-sm">
+                <div class="space-y-4">
 
-                    <select name="category_id" class="w-full rounded-lg border-gray-300 text-sm" required>
-                        <option value="">-- Pilih Kategori --</option>
-                        @foreach ($categories as $cat)
-                            <option value="{{ $cat->id }}">{{ $cat->name }}</option>
-                        @endforeach
-                    </select>
+                    {{-- DESKRIPSI --}}
+                    <div>
+                        <label class="mb-1 block text-xs font-medium text-gray-600">Deskripsi</label>
+                        <input type="text" name="description" placeholder="Contoh: Gaji Bulanan"
+                            class="w-full rounded-xl border-gray-300 text-sm focus:border-blue-500 focus:ring-blue-500">
+                    </div>
 
-                    <select name="type" class="w-full rounded-lg border-gray-300 text-sm" required>
-                        <option value="income">Pemasukan</option>
-                        <option value="expense">Pengeluaran</option>
-                    </select>
+                    {{-- KATEGORI --}}
+                    <div>
+                        <label class="mb-1 block text-xs font-medium text-gray-600">Kategori</label>
+                        <select name="category_id"
+                            class="w-full rounded-xl border-gray-300 text-sm focus:border-blue-500 focus:ring-blue-500"
+                            required>
+                            <option value="">-- Pilih Kategori --</option>
+                            @foreach ($categories as $cat)
+                                <option value="{{ $cat->id }}">{{ $cat->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
 
-                    <input type="number" name="amount" placeholder="Jumlah"
-                        class="w-full rounded-lg border-gray-300 text-sm" required>
+                    {{-- TIPE --}}
+                    <div>
+                        <label class="mb-1 block text-xs font-medium text-gray-600">Tipe</label>
+                        <select name="type"
+                            class="w-full rounded-xl border-gray-300 text-sm focus:border-blue-500 focus:ring-blue-500"
+                            required>
+                            <option value="income">💰 Pemasukan</option>
+                            <option value="expense">💸 Pengeluaran</option>
+                        </select>
+                    </div>
 
-                    <input type="date" name="date"
-                        class="w-full rounded-lg border-gray-300 text-sm" required>
+                    {{-- JUMLAH --}}
+                    <div>
+                        <label class="mb-1 block text-xs font-medium text-gray-600">Jumlah</label>
+                        <input type="number" name="amount" placeholder="Rp 0"
+                            class="w-full rounded-xl border-gray-300 text-sm focus:border-blue-500 focus:ring-blue-500"
+                            required>
+                    </div>
+
+                    {{-- TANGGAL --}}
+                    <div>
+                        <label class="mb-1 block text-xs font-medium text-gray-600">Tanggal</label>
+                        <input type="date" name="date"
+                            class="w-full rounded-xl border-gray-300 text-sm focus:border-blue-500 focus:ring-blue-500"
+                            required>
+                    </div>
                 </div>
 
-                <div class="mt-6 flex justify-end gap-2">
+                {{-- ACTION --}}
+                <div class="mt-6 grid grid-cols-2 gap-3">
                     <button type="button" onclick="closeAddModal()"
-                        class="rounded-lg bg-gray-200 px-4 py-2 text-sm">
+                        class="rounded-xl bg-blue-600 py-3 text-sm font-medium text-white hover:bg-blue-700">
                         Batal
                     </button>
                     <button type="submit"
-                        class="rounded-lg bg-blue-600 px-4 py-2 text-sm text-white">
+                        class="rounded-xl bg-blue-600 py-3 text-sm font-medium text-white hover:bg-blue-700">
                         Simpan
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    {{-- ================= MODAL EDIT ================= --}}
-    <div id="editModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50">
-        <div class="w-full max-w-md rounded-xl bg-white p-6">
-            <h3 class="mb-4 text-lg font-semibold">Edit Transaksi</h3>
-
-            <form id="editForm" method="POST">
-                @csrf
-                @method('PUT')
-
-                <div class="space-y-3">
-                    <input id="editDescription" name="description"
-                        class="w-full rounded-lg border-gray-300 text-sm">
-
-                    <select id="editCategory" name="category_id"
-                        class="w-full rounded-lg border-gray-300 text-sm" required>
-                        @foreach ($categories as $cat)
-                            <option value="{{ $cat->id }}">{{ $cat->name }}</option>
-                        @endforeach
-                    </select>
-
-                    <select id="editType" name="type"
-                        class="w-full rounded-lg border-gray-300 text-sm" required>
-                        <option value="income">Pemasukan</option>
-                        <option value="expense">Pengeluaran</option>
-                    </select>
-
-                    <input id="editAmount" type="number" name="amount"
-                        class="w-full rounded-lg border-gray-300 text-sm">
-
-                    <input id="editDate" type="date" name="date"
-                        class="w-full rounded-lg border-gray-300 text-sm">
-                </div>
-
-                <div class="mt-6 flex justify-end gap-2">
-                    <button type="button" onclick="closeEditModal()"
-                        class="rounded-lg bg-gray-200 px-4 py-2 text-sm">
-                        Batal
-                    </button>
-                    <button type="submit"
-                        class="rounded-lg bg-blue-600 px-4 py-2 text-sm text-white">
-                        Update
                     </button>
                 </div>
             </form>
@@ -202,30 +194,25 @@
 
     {{-- ================= JAVASCRIPT ================= --}}
     <script>
+        const addModal = document.getElementById('addModal');
+        const addModalContent = document.getElementById('addModalContent');
+
         function openAddModal() {
             addModal.classList.remove('hidden');
             addModal.classList.add('flex');
+
+            setTimeout(() => {
+                addModalContent.classList.remove('translate-y-full', 'sm:scale-95');
+                addModalContent.classList.add('translate-y-0', 'sm:scale-100');
+            }, 50);
         }
 
         function closeAddModal() {
-            addModal.classList.add('hidden');
-        }
+            addModalContent.classList.add('translate-y-full', 'sm:scale-95');
 
-        function openEditModal(action, desc, type, amount, date, category) {
-            editDescription.value = desc;
-            editType.value = type;
-            editAmount.value = amount;
-            editDate.value = date;
-            editCategory.value = category;
-
-            editForm.action = action;
-
-            editModal.classList.remove('hidden');
-            editModal.classList.add('flex');
-        }
-
-        function closeEditModal() {
-            editModal.classList.add('hidden');
+            setTimeout(() => {
+                addModal.classList.add('hidden');
+            }, 200);
         }
     </script>
 
