@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\TransactionController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -8,12 +10,16 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    return view('pages.dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('/configurations/categories', function () {
-    return view('configurations.categories');
-})->middleware(['auth', 'verified'])->name('configurations.categories');
+Route::resource('categories', CategoryController::class)
+    ->middleware(['auth', 'verified'])
+    ->names('web.categories');
+
+Route::resource('transactions', TransactionController::class)
+    ->middleware(['auth', 'verified'])
+    ->names('web.transactions');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
