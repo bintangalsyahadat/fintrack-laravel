@@ -67,15 +67,16 @@
 
                                             {{-- EDIT --}}
                                             <button onclick="openEditModal(
-                                                                    '{{ route('web.transactions.update', $trx->id) }}',
-                                                                    '{{ $trx->description }}',
-                                                                    '{{ $trx->type }}',
-                                                                    '{{ $trx->amount }}',
-                                                                    '{{ $trx->date }}',
-                                                                    '{{ $trx->category_id }}'
-                                                                )" class="text-blue-600">
-                                                <i class="fa-solid fa-pen"></i>
-                                            </button>
+                                            '{{ route('web.transactions.update', $trx->id) }}',
+                                            @js($trx->description),
+                                            '{{ $trx->type }}',
+                                            '{{ $trx->amount }}',
+                                            '{{ $trx->date }}',
+                                            '{{ $trx->category_id }}'
+                                        )" class="text-blue-600">
+                                            <i class="fa-solid fa-pen"></i>
+                                        </button>
+
 
                                             {{-- DELETE --}}
                                             <form method="POST" action="{{ route('web.transactions.destroy', $trx->id) }}"
@@ -191,16 +192,66 @@
             </form>
         </div>
     </div>
+    {{-- ================= MODAL EDIT ================= --}}
+    <div id="editModal" class="fixed inset-0 z-50 hidden items-end sm:items-center justify-center bg-black/50">
+        <div id="editModalContent"
+            class="w-full sm:max-w-md rounded-t-2xl sm:rounded-2xl bg-white shadow-xl
+                   transform transition-all duration-300 translate-y-full sm:translate-y-0 sm:scale-95">
+
+            <div class="flex items-center justify-between rounded-t-2xl bg-gradient-to-r from-indigo-600 to-purple-600 px-5 py-4 text-white">
+                <div>
+                    <h3 class="text-base font-semibold">Edit Transaksi</h3>
+                    <p class="text-xs opacity-90">Perbarui data transaksi</p>
+                </div>
+                <button onclick="closeEditModal()">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <form id="editForm" method="POST" class="px-5 py-4">
+                @csrf
+                @method('PUT')
+
+                <div class="space-y-4">
+                    <input id="editDescription" name="description" class="w-full rounded-xl border-gray-300 text-sm">
+                    <select id="editCategory" name="category_id" class="w-full rounded-xl border-gray-300 text-sm">
+                        @foreach ($categories as $cat)
+                            <option value="{{ $cat->id }}">{{ $cat->name }}</option>
+                        @endforeach
+                    </select>
+                    <select id="editType" name="type" class="w-full rounded-xl border-gray-300 text-sm">
+                        <option value="income">💰 Pemasukan</option>
+                        <option value="expense">💸 Pengeluaran</option>
+                    </select>
+                    <input id="editAmount" name="amount" type="number" class="w-full rounded-xl border-gray-300 text-sm">
+                    <input id="editDate" name="date" type="date" class="w-full rounded-xl border-gray-300 text-sm">
+                </div>
+
+                <div class="mt-6 grid grid-cols-2 gap-3">
+                    <button type="button" onclick="closeEditModal()" class="rounded-xl bg-indigo-600 py-3 text-white">Batal</button>
+                    <button class="rounded-xl bg-indigo-600 py-3 text-white">Update</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
     {{-- ================= JAVASCRIPT ================= --}}
     <script>
         const addModal = document.getElementById('addModal');
         const addModalContent = document.getElementById('addModalContent');
+        const editModal = document.getElementById('editModal');
+        const editModalContent = document.getElementById('editModalContent');
+
+        const editForm = document.getElementById('editForm');
+        const editDescription = document.getElementById('editDescription');
+        const editCategory = document.getElementById('editCategory');
+        const editType = document.getElementById('editType');
+        const editAmount = document.getElementById('editAmount');
+        const editDate = document.getElementById('editDate');
 
         function openAddModal() {
             addModal.classList.remove('hidden');
             addModal.classList.add('flex');
-
             setTimeout(() => {
                 addModalContent.classList.remove('translate-y-full', 'sm:scale-95');
                 addModalContent.classList.add('translate-y-0', 'sm:scale-100');
@@ -209,10 +260,29 @@
 
         function closeAddModal() {
             addModalContent.classList.add('translate-y-full', 'sm:scale-95');
+            setTimeout(() => addModal.classList.add('hidden'), 200);
+        }
+
+        function openEditModal(action, desc, type, amount, date, category) {
+            editForm.action = action;
+            editDescription.value = desc;
+            editType.value = type;
+            editAmount.value = amount;
+            editDate.value = date;
+            editCategory.value = category;
+
+            editModal.classList.remove('hidden');
+            editModal.classList.add('flex');
 
             setTimeout(() => {
-                addModal.classList.add('hidden');
-            }, 200);
+                editModalContent.classList.remove('translate-y-full', 'sm:scale-95');
+                editModalContent.classList.add('translate-y-0', 'sm:scale-100');
+            }, 50);
+        }
+
+        function closeEditModal() {
+            editModalContent.classList.add('translate-y-full', 'sm:scale-95');
+            setTimeout(() => editModal.classList.add('hidden'), 200);
         }
     </script>
 
