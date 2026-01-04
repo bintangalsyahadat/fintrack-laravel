@@ -1,6 +1,34 @@
 # Laravel FinTrack
 
-A brief description of your Laravel application.
+## 💰 Sistem Informasi Manajemen Keuangan Pribadi Berbasis Web 💰
+
+
+FinTrack adalah aplikasi berbasis web yang digunakan untuk membantu pengguna dalam mengelola dan memantau keuangan pribadi secara terstruktur dan efisien. Aplikasi ini menyediakan fitur pencatatan pemasukan dan pengeluaran, pengelompokan kategori keuangan, serta visualisasi arus kas dalam bentuk grafik sehingga pengguna dapat memahami kondisi finansialnya dengan lebih baik.
+
+Selain itu, FinTrack dirancang dengan arsitektur RESTful API yang memungkinkan sistem untuk dikembangkan dan diintegrasikan dengan aplikasi lain di masa mendatang.
+
+## 💡 Features
+
+- 🔐 Autentikasi pengguna (Login & Register)
+- 📊 Dashboard ringkasan keuangan (saldo, pemasukan, pengeluaran)
+- 💵 Manajemen data transaksi keuangan (CRUD)
+- 🗂️ Manajemen kategori pemasukan dan pengeluaran
+- 📈 Visualisasi arus kas bulanan
+- 🔗 RESTful API untuk pertukaran data
+
+---
+
+## ⚙️ System Workflow
+1. Pengguna mengakses aplikasi melalui browser
+2. Pengguna melakukan login atau registrasi akun
+3. Sistem memverifikasi data pengguna melalui server
+4. Pengguna diarahkan ke dashboard
+5. Pengguna dapat:
+   - Melihat ringkasan keuangan
+   - Menambah, mengubah, dan menghapus transaksi
+   - Mengelola kategori pemasukan dan pengeluaran
+6. Data ditampilkan secara real-time melalui RESTful API
+---
 
 ## System Requirements
 
